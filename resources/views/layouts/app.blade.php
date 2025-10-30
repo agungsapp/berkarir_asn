@@ -54,6 +54,8 @@
 				<!-- Vendors CSS -->
 				<link rel="stylesheet" href="{{ asset('sneat') }}/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
+				<link rel="stylesheet" href="{{ asset('sneat') }}/vendor/libs/apex-charts/apex-charts.css" />
+
 				<!-- Page CSS -->
 
 				<!-- Helpers -->
@@ -62,6 +64,10 @@
 				<!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
 				<!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
 				<script src="{{ asset('sneat') }}/js/config.js"></script>
+
+				<link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.3.4/datatables.min.css" rel="stylesheet" integrity="sha384-wCOnFm+5eFTFshsNmxMEjAg0Lzr8SZ076plN6EMeWa2MXSJVHfdFuWUix5uc/rr2" crossorigin="anonymous">
+				@stack('css')
+	
 		</head>
 
 		<body>
@@ -81,9 +87,61 @@
 
 										<!-- Content wrapper -->
 										<div class="content-wrapper">
-												<!-- Content -->
-
 												<div class="container-xxl flex-grow-1 container-p-y">
+
+
+
+														@php
+																$path = request()->path();
+
+																// Hilangkan prefix "admin/" kalau ada
+																$path = preg_replace('/^admin\//', '', $path);
+
+																// Pisahkan path jadi array
+																$segments = explode('/', $path);
+
+																$breadcrumbs = [];
+																$url = '';
+
+																// Daftar segmen yang nggak boleh diklik
+																$nonClickable = ['master', 'admin', 'peserta'];
+
+																foreach ($segments as $segment) {
+																    if ($segment == '') {
+																        continue;
+																    }
+																    $url .= '/' . $segment;
+
+																    $breadcrumbs[] = [
+																        'name' => ucfirst(str_replace('-', ' ', $segment)),
+																        'url' => url($url),
+																        'clickable' => !in_array($segment, $nonClickable),
+																    ];
+																}
+														@endphp
+
+														<h4 class="fw-bold mb-4 py-3">
+																@foreach ($breadcrumbs as $i => $crumb)
+@if ($i < count($breadcrumbs) - 1)
+<span class="text-muted fw-light">
+																						@if ($crumb['clickable'])
+<a href="{{ $crumb['url'] }}" class="text-decoration-none text-muted">
+																										{{ $crumb['name'] }}
+																								</a>
+@else
+{{ $crumb['name'] }}
+@endif
+																						/
+																				</span>
+@else
+{{ $crumb['name'] }}
+@endif
+@endforeach
+														</h4>
+
+
+
+
 														<!-- Layout Demo -->
 														{{ $slot }}
 														<!--/ Layout Demo -->
@@ -130,13 +188,21 @@
 				<!-- endbuild -->
 
 				<!-- Vendors JS -->
+				<script src="{{ asset('sneat') }}/vendor/libs/apex-charts/apexcharts.js"></script>
 
 				<!-- Main JS -->
 				<script src="{{ asset('sneat') }}/js/main.js"></script>
 
 				<!-- Page JS -->
+				<script src="{{ asset('sneat') }}/js/dashboards-analytics.js"></script>
+
+				{{-- datatable --}}
+<script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.3.4/datatables.min.js"
+		integrity="sha384-Ntaqx3XQQQY/+R/Ga/RadT0sniT7Abp5GEzdlCYPZ6x98lObEYVegDox22NdQfdy" crossorigin="anonymous"></script>
+
 
 				<!-- Place this tag in your head or just before your close body tag. -->
 				<script async defer src="https://buttons.github.io/buttons.js"></script>
+				@stack('js')
 		</body>
 </html>
