@@ -44,11 +44,12 @@
 												<div>Tipe Ujian</div>
 										</a>
 								</li>
-								<li class="menu-item">
-										<a href="ui-accordion.html" class="menu-link">
-												<div>Data Pengguna</div>
+								<li class="menu-item {{ Route::is('admin.master.data-peserta.index') ? 'active' : '' }}">
+										<a href="{{ route('admin.master.data-peserta.index') }}" class="menu-link">
+												<div>Data Peserta</div>
 										</a>
 								</li>
+
 								<li class="menu-item">
 										<a href="ui-badges.html" class="menu-link">
 												<div>Badges</div>

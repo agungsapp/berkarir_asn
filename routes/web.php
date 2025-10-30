@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\Master\DataPesertaController;
 use App\Http\Controllers\Admin\Master\JenisController;
 use App\Http\Controllers\Admin\Master\TipeController;
 use App\Http\Controllers\ProfileController;
@@ -16,6 +17,7 @@ Route::prefix('admin/')->name('admin.')->group(function () {
     Route::prefix('master/')->name('master.')->group(function () {
         Route::resource('jenis-ujian', JenisController::class);
         Route::resource('tipe-ujian', TipeController::class);
+        Route::resource('data-peserta', DataPesertaController::class);
     });
 });
 

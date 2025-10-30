@@ -3,63 +3,58 @@
 namespace App\Http\Controllers\Admin\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\TipeUjian;
 use Illuminate\Http\Request;
 
 class TipeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return view('admin.master.tipe.index', [
+            'tipe' => TipeUjian::all()
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|unique:tipe_ujians,nama'
+        ], [
+            'nama.required' => 'Nama wajib diisi',
+            'nama.unique'   => 'Tipe ujian sudah ada',
+        ]);
+
+        TipeUjian::create($request->only('nama'));
+        sweetalert()->success('Berhasil disimpan.');
+
+        return redirect()->back();
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(TipeUjian $tipeUjian)
     {
-        //
+        return view('admin.master.tipe.edit', compact('tipeUjian'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, TipeUjian $tipeUjian)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|unique:tipe_ujians,nama,' . $tipeUjian->id
+        ], [
+            'nama.required' => 'Nama wajib diisi',
+            'nama.unique'   => 'Tipe ujian sudah ada',
+        ]);
+
+        $tipeUjian->update($request->only('nama'));
+        sweetalert()->success('Berhasil diperbarui.');
+
+        return redirect()->route('admin.master.tipe-ujian.index');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(TipeUjian $tipeUjian)
     {
-        //
-    }
+        $tipeUjian->delete();
+        sweetalert()->success('Berhasil dihapus.');
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->back();
     }
 }
