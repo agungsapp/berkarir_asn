@@ -34,15 +34,23 @@ class JenisController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string'
+        $validated = $request->validate([
+            'nama' => 'required|string|unique:jenis_ujians,nama'
         ], [
-            'nama.required' => 'Nama wajib di isi',
-            'nama.string' => 'Nama harus berupa huruf'
+            'nama.required' => 'Nama wajib diisi',
+            'nama.string' => 'Nama harus berupa huruf',
+            'nama.unique' => 'Jenis ujian ini sudah ada',
         ]);
-
-        return redirect()->back();
+        try {
+            JenisUjian::create($validated);
+            sweetalert()->success('Berhasil disimpan.');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            sweetalert()->error('Terjadi kesalahan saat menyimpan data.');
+            return redirect()->back()->withInput();
+        }
     }
+
 
     /**
      * Display the specified resource.
@@ -55,24 +63,35 @@ class JenisController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(JenisUjian $jenisUjian)
     {
-        //
+
+        return view('admin.master.jenis.edit', compact('jenisUjian'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, JenisUjian $jenisUjian)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|unique:jenis_ujians,nama,' . $jenisUjian->id
+        ], [
+            'nama.required' => 'Nama wajib diisi',
+            'nama.unique'   => 'Jenis ujian sudah ada',
+        ]);
+
+        $jenisUjian->update($request->only('nama'));
+        sweetalert()->success('Berhasil diperbarui.');
+
+        return redirect()->route('admin.master.jenis-ujian.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(JenisUjian $jenisUjian)
     {
-        //
+        $jenisUjian->delete();
+        sweetalert()->success('Berhasil dihapus.');
+
+        return redirect()->back();
     }
 }

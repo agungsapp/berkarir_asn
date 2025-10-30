@@ -39,6 +39,11 @@
 												<div>Jenis Ujian</div>
 										</a>
 								</li>
+								<li class="menu-item {{ Route::is('admin.master.tipe-ujian.index') ? 'active' : '' }}">
+										<a href="{{ route('admin.master.tipe-ujian.index') }}" class="menu-link">
+												<div>Tipe Ujian</div>
+										</a>
+								</li>
 								<li class="menu-item">
 										<a href="ui-accordion.html" class="menu-link">
 												<div>Data Pengguna</div>
